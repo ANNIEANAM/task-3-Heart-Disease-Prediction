@@ -72,23 +72,34 @@ Logistic Regression was selected as the classification model because it is effec
 The model was trained on 80% of the dataset and evaluated on the remaining 20%.
 
 ---
+## Exploratory Data Analysis (EDA)
+Heart Disease Distribution: The dataset contains both heart disease and non-heart disease cases, making it suitable for binary classification.
+Age Distribution: Most patients belong to middle-aged and older age groups, indicating that heart disease risk increases with age.
+Heart Disease by Gender: The distribution suggests differences in heart disease occurrence between genders.
+Correlation Heatmap: Several clinical features showed noticeable relationships with heart disease and with each other.
 
 ## Model Evaluation
 
 The model was evaluated using:
 
-* Accuracy Score
-* Classification Report
-* Confusion Matrix
-* ROC Curve
-* ROC-AUC Score
-
+1. Classification Report: Precision, Recall, and F1-Score were used to evaluate model performance for both classes.
+2. Confusion Matrix: The model correctly classified the majority of patients, demonstrating good predictive capability.
+3. ROC Curve: The ROC curve showed the model's effectiveness in distinguishing between patients with and without heart disease.
+4. ROC-AUC Score: The AUC value indicated strong classification performance and reliable discrimination between classes.
 These metrics provide a comprehensive assessment of classification performance.
 
+## Important Features
+
+Feature importance analysis revealed that the following attributes had the strongest influence on heart disease prediction:
+Chest Pain Type (CP)
+Maximum Heart Rate Achieved (Thalach)
+Exercise-Induced Angina (Exang)
+ST Depression (Oldpeak)
+Thalassemia (Thal)
+These factors contributed significantly to determining whether a patient was at risk of heart disease.
 ---
 
 ## Key Results and Findings
-
 * The Logistic Regression model successfully classified patients into heart disease and non-heart disease categories.
 * ROC-AUC analysis demonstrated the model's ability to distinguish between positive and negative cases.
 * Feature importance analysis revealed that clinical factors such as chest pain type, exercise-induced angina, maximum heart rate achieved, ST depression, and thalassemia significantly influenced predictions.
