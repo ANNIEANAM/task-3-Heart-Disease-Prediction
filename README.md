@@ -1,1 +1,103 @@
-# task-5
+# Heart Disease Prediction Using Logistic Regression
+
+## Task Objective
+
+The objective of this project is to develop a machine learning model that predicts whether a patient is at risk of heart disease based on medical and clinical attributes. Early prediction of heart disease can assist healthcare professionals in making informed decisions and improving patient outcomes.
+
+---
+
+## Dataset Used
+
+**Dataset:** Heart Disease UCI Dataset
+
+The dataset contains patient health information such as:
+
+* Age
+* Sex
+* Chest Pain Type (cp)
+* Resting Blood Pressure (trestbps)
+* Cholesterol Level (chol)
+* Fasting Blood Sugar (fbs)
+* Resting ECG Results (restecg)
+* Maximum Heart Rate Achieved (thalch)
+* Exercise-Induced Angina (exang)
+* ST Depression (oldpeak)
+* Slope of Peak Exercise ST Segment (slope)
+* Number of Major Vessels (ca)
+* Thalassemia (thal)
+
+The original target variable (`num`) was converted into a binary classification problem:
+
+* 0 → No Heart Disease
+* 1 → Heart Disease
+
+---
+
+## Data Preprocessing
+
+The following preprocessing steps were performed:
+
+1. Loaded the dataset using Pandas.
+2. Created a binary target variable from the original disease severity column.
+3. Removed unnecessary columns.
+4. Handled missing values using:
+
+   * Mode for categorical features
+   * Median for numerical features
+5. Applied One-Hot Encoding to categorical variables.
+6. Standardized numerical features using StandardScaler.
+7. Split the dataset into training and testing sets.
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+Several visualizations were created to understand the dataset:
+
+* Heart Disease Distribution
+* Age Distribution
+* Heart Disease by Gender
+* Correlation Heatmap
+
+These visualizations helped identify patterns and relationships among clinical features.
+
+---
+
+## Model Applied
+
+### Logistic Regression
+
+Logistic Regression was selected as the classification model because it is effective for binary classification tasks and provides interpretable feature coefficients.
+
+The model was trained on 80% of the dataset and evaluated on the remaining 20%.
+
+---
+
+## Model Evaluation
+
+The model was evaluated using:
+
+* Accuracy Score
+* Classification Report
+* Confusion Matrix
+* ROC Curve
+* ROC-AUC Score
+
+These metrics provide a comprehensive assessment of classification performance.
+
+---
+
+## Key Results and Findings
+
+* The Logistic Regression model successfully classified patients into heart disease and non-heart disease categories.
+* ROC-AUC analysis demonstrated the model's ability to distinguish between positive and negative cases.
+* Feature importance analysis revealed that clinical factors such as chest pain type, exercise-induced angina, maximum heart rate achieved, ST depression, and thalassemia significantly influenced predictions.
+* The results indicate that machine learning can be effectively used to support heart disease risk assessment and early diagnosis.
+
+---
+
+## Conclusion
+
+This project demonstrates the application of machine learning techniques for heart disease prediction using the Heart Disease UCI dataset. After preprocessing, exploratory analysis, and model training, Logistic Regression achieved reliable performance and identified important health indicators associated with heart disease risk.
+
+The project highlights the potential of data-driven approaches in assisting healthcare professionals with early disease detection and decision-making.
