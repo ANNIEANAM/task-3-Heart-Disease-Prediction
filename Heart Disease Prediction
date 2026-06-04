@@ -1,0 +1,198 @@
+## Problem Statement
+Heart disease is one of the leading causes of death worldwide. Early prediction can help healthcare professionals take preventive measures and improve patient outcomes.
+The objective of this project is to build a machine learning model that predicts whether a patient is at risk of heart disease based on medical and clinical attributes.
+
+## Import Libraries
+
+In this step, we import all required libraries for data manipulation, visualization, preprocessing, model training, and evaluation.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    classification_report,
+    roc_curve,
+    roc_auc_score
+)
+
+## Load Dataset
+The Heart Disease UCI dataset is loaded into a Pandas DataFrame for analysis.
+df = pd.read_csv("/content/heart_disease_uci.csv")
+df.head()
+                                              ##output  
+id	age	sex	dataset	cp	trestbps	chol	fbs	restecg	thalch	exang	oldpeak	slope	ca	thal	num
+0	1	63	Male	Cleveland	typical angina	145.0	233.0	True	lv hypertrophy	150.0	False	2.3	downsloping	0.0	fixed defect	0
+1	2	67	Male	Cleveland	asymptomatic	160.0	286.0	False	lv hypertrophy	108.0	True	1.5	flat	3.0	normal	2
+2	3	67	Male	Cleveland	asymptomatic	120.0	229.0	False	lv hypertrophy	129.0	True	2.6	flat	2.0	reversable defect	1
+3	4	37	Male	Cleveland	non-anginal	130.0	250.0	False	normal	187.0	False	3.5	downsloping	0.0	normal	0
+4	5	41	Female	Cleveland	atypical angina	130.0	204.0	False	lv hypertrophy	172.0	False	1.4	upsloping	0.0	normal	0
+
+
+## Dataset Overview
+This step helps us understand the dataset structure, data types, and missing values.
+print("Dataset Shape:", df.shape)
+df.info()
+df.isnull().sum()
+
+## Data Preprocessing
+The target variable is converted into a binary classification problem.
+- 0 = No Heart Disease
+- 1 = Heart Disease
+df["target"] = (df["num"] > 0).astype(int)
+df.drop(["id", "num"], axis=1, inplace=True)
+df.head()
+
+## Handling Missing Values
+Missing values are filled using:
+- Mode for categorical variables
+- Median for numerical variables
+for col in df.columns:
+    if df[col].dtype == "object":
+        df[col] = df[col].fillna(df[col].mode()[0])
+    else:
+        df[col] = df[col].fillna(df[col].median())
+print(df.isnull().sum())
+
+## Exploratory Data Analysis (EDA)
+EDA helps identify trends and patterns in the dataset.
+
+### Heart Disease Distribution
+sns.countplot(x="target", data=df)
+plt.title("Heart Disease Distribution")
+plt.show()
+
+### Age Distribution
+sns.histplot(df["age"], bins=20, kde=True)
+plt.title("Age Distribution")
+plt.show()
+
+### Heart Disease by Gender
+sns.countplot(x="sex", hue="target", data=df)
+plt.title("Heart Disease by Gender")
+plt.show()
+
+### Correlation Heatmap
+plt.figure(figsize=(12,8))
+sns.heatmap(
+    df.select_dtypes(include=["int64","float64"]).corr(),
+    annot=True,
+    cmap="coolwarm"
+)
+plt.title("Correlation Heatmap")
+plt.show()
+
+## Feature Engineering
+Categorical variables are converted into numerical form using One-Hot Encoding.
+df = pd.get_dummies(
+    df,
+    columns=[
+        "sex",
+        "cp",
+        "dataset",
+        "fbs",
+        "restecg",
+        "exang",
+        "slope",
+        "thal"
+    ],
+    drop_first=True
+)
+df.head()
+
+## Feature Selection
+The dataset is divided into features (X) and target variable (y).
+X = df.drop("target", axis=1)
+y = df["target"]
+
+## Train-Test Split
+The dataset is split into:
+- 80% Training Data
+- 20% Testing Data
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+## Feature Scaling
+Feature scaling standardizes numerical values and improves Logistic Regression performance.
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+## Logistic Regression Model
+Logistic Regression is used to classify whether a patient has heart disease or not.
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+## Model Prediction
+y_pred = model.predict(X_test)
+y_prob = model.predict_proba(X_test)[:,1]
+
+## Model Evaluation
+The model is evaluated using Accuracy Score and Classification Report.
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print(classification_report(y_test, y_pred))
+
+### Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6,4))
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues"
+)
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.show()
+
+### ROC Curve and AUC Score
+The ROC Curve evaluates the model's ability to distinguish between positive and negative classes.
+fpr, tpr, _ = roc_curve(y_test, y_prob)
+auc_score = roc_auc_score(y_test, y_prob)
+plt.figure(figsize=(6,4))
+plt.plot(
+    fpr,
+    tpr,
+    label=f"AUC = {auc_score:.3f}"
+)
+plt.plot([0,1],[0,1],"--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.legend()
+plt.show()
+print("ROC-AUC Score:", auc_score)
+
+## Feature Importance Analysis
+Logistic Regression coefficients indicate the influence of each feature on the prediction.
+importance = pd.DataFrame({
+    "Feature": X.columns,
+    "Coefficient": model.coef_[0]
+})
+importance = importance.sort_values(
+    by="Coefficient",
+    ascending=False
+)
+importance.head(10)
+plt.figure(figsize=(10,6))
+sns.barplot(
+    data=importance.head(10),
+    x="Coefficient",
+    y="Feature"
+)
+plt.title("Top 10 Important Features")
+plt.show()
+
+
+
+
